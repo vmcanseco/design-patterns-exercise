@@ -2,6 +2,6 @@ package oop.inheritance.application.keyboard;
 
 public interface IKeyboard {
 
-    String readKeyChar();
-    String readKeyLine();
+    String getChar();
+    String readLine();
 }

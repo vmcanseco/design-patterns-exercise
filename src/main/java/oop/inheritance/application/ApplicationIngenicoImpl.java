@@ -1,7 +1,7 @@
 package oop.inheritance.application;
 
 import oop.inheritance.application.display.IDisplay;
-import oop.inheritance.application.factory.PeripheralFactory;
+import oop.inheritance.application.factory.IPeripheralFactory;
 import oop.inheritance.application.keyboard.IKeyboard;
 
 public class ApplicationIngenicoImpl implements IApplication {
@@ -9,7 +9,7 @@ public class ApplicationIngenicoImpl implements IApplication {
     private IDisplay ingenicoDisplay;
     private IKeyboard ingenicoKeyboard;
 
-    public ApplicationIngenicoImpl(PeripheralFactory peripheralFactory) {
+    public ApplicationIngenicoImpl(IPeripheralFactory peripheralFactory) {
         ingenicoDisplay = peripheralFactory.createDisplay();
         ingenicoKeyboard = peripheralFactory.createKeyboard();
     }
@@ -51,6 +51,6 @@ public class ApplicationIngenicoImpl implements IApplication {
 
     @Override
     public String readKey() {
-        return ingenicoKeyboard.readKeyChar();
+        return ingenicoKeyboard.getChar();
     }
 }

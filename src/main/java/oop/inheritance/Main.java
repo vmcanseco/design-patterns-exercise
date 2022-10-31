@@ -1,11 +1,10 @@
 package oop.inheritance;
 
 import oop.inheritance.application.*;
-import oop.inheritance.application.factory.IngenicoPeripheralFactory;
-import oop.inheritance.application.factory.VerifonePeripheralFactory;
+import oop.inheritance.application.factory.AbstractTerminalFactory;
+import oop.inheritance.application.factory.IngenicoTerminalFactory;
+import oop.inheritance.application.factory.VerifoneTerminalFactory;
 import oop.inheritance.data.SupportedTerminal;
-
-import java.util.List;
 
 interface Card{
     void process();
@@ -23,34 +22,35 @@ interface Provider{
 
 public class Main {
 
-    public static IApplication configureApplication(String terminal) throws Exception {
+    /*public static IApplication configureApplication(String terminal) throws Exception {
         IApplication application;
         SupportedTerminal supportedTerminal = SupportedTerminal.valueOf(terminal);
         if (supportedTerminal == SupportedTerminal.INGENICO) {
-            application = new ApplicationIngenicoImpl(new IngenicoPeripheralFactory());
+            application = new ApplicationIngenicoImpl(new IngenicoTerminalFactory());
         } else if (supportedTerminal == SupportedTerminal.VERIFONE) {
-            application = new ApplicationVerifoneImpl(new VerifonePeripheralFactory());
+            application = new ApplicationVerifoneImpl(new VerifoneTerminalFactory());
         } else {
             throw new Exception("Invalid terminal");
         }
         return application;
-    }
+    }*/
 
     public static void main(String[] args) throws Exception {
-        /*IApplication application = configureApplication(args[0]);
+        String terminal = args[0];
+        Application application = new Application(AbstractTerminalFactory.createTerminalFactory(terminal));
 
         while (true) {
             run(application);
-        }*/
+        }
 
-        CardProvider cardProvider=new CardProvider();
+        /*CardProvider cardProvider=new CardProvider();
         cardProvider.readCard(card -> {
             System.out.println("Hola");
-        });
+        });*/
 
     }
 
-    public static void run(IApplication application) {
+    public static void run(Application application) {
         application.clearScreen();
         application.showMenu();
 

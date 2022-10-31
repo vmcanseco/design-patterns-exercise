@@ -1,13 +1,13 @@
 package oop.inheritance.application;
 
 import oop.inheritance.application.display.IDisplay;
-import oop.inheritance.application.factory.PeripheralFactory;
+import oop.inheritance.application.factory.IPeripheralFactory;
 import oop.inheritance.application.keyboard.IKeyboard;
 
 public class ApplicationVerifoneImpl implements IApplication{
     IDisplay verifoneDisplay;
     IKeyboard verifoneKeyboard;
-    public ApplicationVerifoneImpl(PeripheralFactory peripheralFactory){
+    public ApplicationVerifoneImpl(IPeripheralFactory peripheralFactory){
         verifoneDisplay = peripheralFactory.createDisplay();
         verifoneKeyboard = peripheralFactory.createKeyboard();
 
@@ -48,6 +48,6 @@ public class ApplicationVerifoneImpl implements IApplication{
 
     @Override
     public String readKey() {
-        return verifoneKeyboard.readKeyChar();
+        return verifoneKeyboard.getChar();
     }
 }

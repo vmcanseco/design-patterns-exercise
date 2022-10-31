@@ -5,17 +5,15 @@ import oop.inheritance.application.display.IDisplay;
 import oop.inheritance.application.keyboard.IKeyboard;
 import oop.inheritance.application.keyboard.KeyboardVerifone;
 
-public class VerifonePeripheralFactory implements  PeripheralFactory{
-    private DisplayVerifone displayVerifone;
-    private KeyboardVerifone keyboardVerifone;
+public class VerifoneTerminalFactory extends AbstractTerminalFactory {
+
     @Override
     public IDisplay createDisplay() {
-
-        return displayVerifone == null ? new DisplayVerifone():displayVerifone;
+        return DisplayVerifone.getInstance();
     }
 
     @Override
     public IKeyboard createKeyboard() {
-        return keyboardVerifone == null ? new KeyboardVerifone() : keyboardVerifone;
+        return KeyboardVerifone.getInstance();
     }
 }
