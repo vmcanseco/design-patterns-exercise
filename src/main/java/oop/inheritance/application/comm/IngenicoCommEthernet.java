@@ -1,30 +1,49 @@
 package oop.inheritance.application.comm;
 
-import oop.inheritance.application.ITransaction;
-import oop.inheritance.application.ITransactionResponse;
-import oop.inheritance.application.IngenicoTransaction;
+import oop.inheritance.application.transaction.BaseTransactionResponse;
+import oop.inheritance.application.transaction.ITransaction;
+import oop.inheritance.application.transaction.ITransactionResponse;
+import oop.library.ingenico.model.Card;
+import oop.library.ingenico.model.ExpirationDate;
 import oop.library.ingenico.model.Transaction;
+import oop.library.ingenico.model.TransactionResponse;
 import oop.library.ingenico.services.IngenicoEthernet;
 
-public class IngenicoCommEthernet extends IngenicoEthernet implements  ICommunication {
+public class IngenicoCommEthernet implements  ICommunication {
+    IngenicoEthernet ingenicoEthernet;
+
+    public IngenicoCommEthernet(){
+        ingenicoEthernet=new IngenicoEthernet();
+    }
 
     @Override
     public void fopen() {
-        super.open();
+        ingenicoEthernet.open();
     }
 
     @Override
     public void fsend(ITransaction transaction) {
-        super.send((IngenicoTransaction) transaction);
+        Transaction transaction1 = new Transaction();
+        transaction1.setAmountInCents(transaction.getAmountInCents());
+        transaction1.setLocalDateTime(transaction.getLocalDateTime());
+
+        Card card =  Card.builder().account(transaction.getCard().getAccount())
+                .expirationDate(ExpirationDate.builder().year(transaction.getCard().getExpirationDate().getYear())
+                        .year(transaction.getCard().getExpirationDate().getYear()).build()).build();
+
+        transaction1.setCard(card);
+
+        ingenicoEthernet.send(transaction1);
     }
 
     @Override
     public ITransactionResponse freceive() {
-        return null;
+        TransactionResponse response=ingenicoEthernet.receive();
+        return new BaseTransactionResponse(response.isApproved(),response.getHostReference());
     }
 
     @Override
     public void fclose() {
-        super.close();
+        ingenicoEthernet.close();
     }
 }

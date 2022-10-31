@@ -1,19 +1,22 @@
 package oop.inheritance;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import oop.inheritance.application.comm.ICommunication;
+import oop.inheritance.application.transaction.ITransaction;
+import oop.inheritance.application.transaction.ITransactionResponse;
+import oop.inheritance.application.transaction.IngenicoTransaction;
 import oop.inheritance.application.display.IDisplay;
 import oop.inheritance.application.factory.AbstractTerminalFactory;
 import oop.inheritance.application.keyboard.IKeyboard;
-import oop.inheritance.data.CommunicationType;
-import oop.library.ingenico.model.Card;
-import oop.library.ingenico.model.Transaction;
-import oop.library.ingenico.model.TransactionResponse;
+import oop.inheritance.application.model.ICard;
+import oop.inheritance.application.readers.ICardReader;
 import oop.library.ingenico.services.*;
 
 public class Application{
 
-    private CommunicationType communicationType = CommunicationType.ETHERNET;
+    //private CommunicationType communicationType = CommunicationType.ETHERNET;
 
     private AbstractTerminalFactory terminalFactory;
 
@@ -39,43 +42,53 @@ public class Application{
     }
 
     public void doSale() {
-        IngenicoCardSwipper cardSwipper = new IngenicoCardSwipper();
-        IngenicoChipReader chipReader = new IngenicoChipReader();
+        /*IngenicoCardSwipper cardSwipper = new IngenicoCardSwipper();
+        IngenicoChipReader chipReader = new IngenicoChipReader();*/
         IDisplay ingenicoDisplay = terminalFactory.createDisplay();
         IKeyboard ingenicoKeyboard = terminalFactory.createKeyboard();
-        Card card;
+        List<ICardReader> cardReaders = terminalFactory.createCardReaders();
+        /*Card card;
 
         do {
             card = cardSwipper.readCard();
             if (card == null) {
                 card = chipReader.readCard();
             }
-        } while (card == null);
+        } while (card == null);*/
 
-        ingenicoDisplay.clear();
-        ingenicoDisplay.showMessage(5, 20, "Capture monto:");
+        for (ICardReader cardReader:cardReaders){
+            if (cardReader!=null){
+                ICard card = cardReader.readCard();
 
-        String amount = ingenicoKeyboard.readLine(); //Amount with decimal point as string
+                ingenicoDisplay.clear();
+                ingenicoDisplay.showMessage(5, 20, "Capture monto:");
 
-        Transaction transaction = new Transaction();
+                String amount = ingenicoKeyboard.readLine(); //Amount with decimal point as string
 
-        transaction.setLocalDateTime(LocalDateTime.now());
-        transaction.setCard(card);
-        transaction.setAmountInCents(Integer.parseInt(amount.replace(".", "")));
+                //Transaction transaction = new Transaction();
+                ITransaction transaction = new IngenicoTransaction();
 
-        TransactionResponse response = sendSale(transaction);
+                transaction.setLocalDateTime(LocalDateTime.now());
+                transaction.setCard(card);
+                transaction.setAmountInCents(Integer.parseInt(amount.replace(".", "")));
 
-        if (response.isApproved()) {
-            ingenicoDisplay.showMessage(5, 25, "APROBADA");
-            printReceipt(transaction, response.getHostReference());
-        } else {
-            ingenicoDisplay.showMessage(5, 25, "DENEGADA");
+                ITransactionResponse response = sendSale(transaction);
+
+                if (response.isApproved()) {
+                    ingenicoDisplay.showMessage(5, 25, "APROBADA");
+                    printReceipt(transaction, response.getHostReference());
+                } else {
+                    ingenicoDisplay.showMessage(5, 25, "DENEGADA");
+                }
+                break;
+            }
         }
+
     }
 
-    private void printReceipt(Transaction transaction, String hostReference) {
+    private void printReceipt(ITransaction transaction, String hostReference) {
         IngenicoPrinter ingenicoPrinter = new IngenicoPrinter();
-        Card card = transaction.getCard();
+        ICard card = transaction.getCard();
 
         ingenicoPrinter.print(5, "APROBADA");
         ingenicoPrinter.lineFeed();
@@ -87,8 +100,14 @@ public class Application{
 
     }
 
-    private TransactionResponse sendSale(Transaction transaction) {
-        IngenicoEthernet ethernet = new IngenicoEthernet();
+    private ITransactionResponse sendSale(ITransaction transaction) {
+        ICommunication communication = terminalFactory.createCommunication();
+        communication.fopen();
+        communication.fsend(transaction);
+        ITransactionResponse transactionResponse = communication.freceive();
+        communication.fclose();
+        return  transactionResponse;
+        /*IngenicoEthernet ethernet = new IngenicoEthernet();
         IngenicoModem modem = new IngenicoModem();
         IngenicoGPS gps = new IngenicoGPS();
         TransactionResponse transactionResponse = null;
@@ -112,9 +131,7 @@ public class Application{
                 transactionResponse = modem.receive();
                 modem.close();
                 break;
-        }
-
-        return transactionResponse;
+        }*/
     }
 
     public void doRefund() {

@@ -6,19 +6,6 @@ import oop.inheritance.application.factory.IngenicoTerminalFactory;
 import oop.inheritance.application.factory.VerifoneTerminalFactory;
 import oop.inheritance.data.SupportedTerminal;
 
-interface Card{
-    void process();
-}
-@FunctionalInterface
-interface Provider{
-    void readCard(Card card);
-}
-
-  class CardProvider{
-      void readCard(Provider provider) {
-
-      }
-  }
 
 public class Main {
 
@@ -37,17 +24,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         String terminal = args[0];
-        Application application = new Application(AbstractTerminalFactory.createTerminalFactory(terminal));
+        String communicationType=args[1];
+        Application application = new Application(AbstractTerminalFactory.createTerminalFactory(terminal,communicationType));
 
         while (true) {
             run(application);
         }
-
-        /*CardProvider cardProvider=new CardProvider();
-        cardProvider.readCard(card -> {
-            System.out.println("Hola");
-        });*/
-
     }
 
     public static void run(Application application) {

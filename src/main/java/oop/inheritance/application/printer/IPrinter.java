@@ -1,6 +1,6 @@
 package oop.inheritance.application.printer;
 
 public interface IPrinter {
-    void fprint(int x, String message);
-    void flinefeed();
+    void print(int x, String message);
+    void linefeed();
 }

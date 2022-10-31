@@ -1,7 +1,7 @@
 package oop.inheritance.application.comm;
 
-import oop.inheritance.application.ITransaction;
-import oop.inheritance.application.ITransactionResponse;
+import oop.inheritance.application.transaction.ITransaction;
+import oop.inheritance.application.transaction.ITransactionResponse;
 
 public interface ICommunication {
     void fopen();
