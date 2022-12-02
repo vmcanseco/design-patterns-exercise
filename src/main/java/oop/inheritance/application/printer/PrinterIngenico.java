@@ -15,7 +15,7 @@ public class PrinterIngenico  implements IPrinter {
     }
 
     @Override
-    public void linefeed() {
+    public void lineFeed() {
         ingenicoPrinter.lineFeed();
     }
 

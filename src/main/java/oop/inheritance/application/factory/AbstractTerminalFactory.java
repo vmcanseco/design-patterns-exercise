@@ -2,6 +2,7 @@ package oop.inheritance.application.factory;
 
 import oop.inheritance.application.comm.ICommunication;
 import oop.inheritance.application.printer.IPrinter;
+import oop.inheritance.application.readers.ICardProvider;
 import oop.inheritance.application.transaction.ITransaction;
 import oop.inheritance.application.display.IDisplay;
 import oop.inheritance.application.keyboard.IKeyboard;
@@ -17,6 +18,7 @@ public abstract class AbstractTerminalFactory {
     public abstract ITransaction createTransaction();
     public abstract ICommunication createCommunication();
     public abstract IPrinter createPrinter();
+    public abstract ICardProvider createCardProvider();
 
     public static AbstractTerminalFactory createTerminalFactory(String terminal,String communicationType){
         switch (terminal){

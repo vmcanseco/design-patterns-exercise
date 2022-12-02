@@ -16,7 +16,7 @@ public class PrinterVerifone implements IPrinter {
     }
 
     @Override
-    public void linefeed() {
+    public void lineFeed() {
         verifoneV240mPrinter.lineFeed();
     }
 

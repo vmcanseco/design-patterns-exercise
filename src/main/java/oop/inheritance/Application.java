@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import oop.inheritance.application.comm.ICommunication;
+import oop.inheritance.application.printer.IPrinter;
+import oop.inheritance.application.readers.ICardConsumer;
+import oop.inheritance.application.readers.ICardProvider;
 import oop.inheritance.application.transaction.ITransaction;
 import oop.inheritance.application.transaction.ITransactionResponse;
 import oop.inheritance.application.transaction.IngenicoTransaction;
@@ -56,6 +59,39 @@ public class Application{
             }
         } while (card == null);*/
 
+        ICardProvider cardProvider = terminalFactory.createCardProvider();
+
+        cardProvider.readCard(new ICardConsumer() {
+            @Override
+            public void consumeCard(ICard card, String value) {
+
+            }
+        })
+
+        cardProvider.readCard((card,val) -> {
+
+            ingenicoDisplay.clear();
+            ingenicoDisplay.showMessage(5, 20, "Capture monto:");
+
+            String amount = ingenicoKeyboard.readLine(); //Amount with decimal point as string
+
+            //Transaction transaction = new Transaction();
+            ITransaction transaction = terminalFactory.createTransaction();
+
+            transaction.setLocalDateTime(LocalDateTime.now());
+            transaction.setCard(card);
+            transaction.setAmountInCents(Integer.parseInt(amount.replace(".", "")));
+
+            ITransactionResponse response = sendSale(transaction);
+
+            if (response.isApproved()) {
+                ingenicoDisplay.showMessage(5, 25, "APROBADA");
+                printReceipt(transaction, response.getHostReference());
+            } else {
+                ingenicoDisplay.showMessage(5, 25, "DENEGADA");
+            }
+        });
+
         for (ICardReader cardReader:cardReaders){
             if (cardReader!=null){
                 ICard card = cardReader.readCard();
@@ -66,7 +102,7 @@ public class Application{
                 String amount = ingenicoKeyboard.readLine(); //Amount with decimal point as string
 
                 //Transaction transaction = new Transaction();
-                ITransaction transaction = new IngenicoTransaction();
+                ITransaction transaction = terminalFactory.createTransaction();
 
                 transaction.setLocalDateTime(LocalDateTime.now());
                 transaction.setCard(card);
@@ -87,7 +123,7 @@ public class Application{
     }
 
     private void printReceipt(ITransaction transaction, String hostReference) {
-        IngenicoPrinter ingenicoPrinter = new IngenicoPrinter();
+        IPrinter ingenicoPrinter = terminalFactory.createPrinter();
         ICard card = transaction.getCard();
 
         ingenicoPrinter.print(5, "APROBADA");

@@ -6,15 +6,13 @@ import oop.inheritance.application.comm.IngenicoCommGPS;
 import oop.inheritance.application.comm.IngenicoCommModem;
 import oop.inheritance.application.printer.IPrinter;
 import oop.inheritance.application.printer.PrinterIngenico;
-import oop.inheritance.application.readers.ChipReaderIngenico;
+import oop.inheritance.application.readers.*;
 import oop.inheritance.application.transaction.ITransaction;
 import oop.inheritance.application.transaction.IngenicoTransaction;
 import oop.inheritance.application.display.DisplayIngenico;
 import oop.inheritance.application.display.IDisplay;
 import oop.inheritance.application.keyboard.IKeyboard;
 import oop.inheritance.application.keyboard.KeyboardIngenico;
-import oop.inheritance.application.readers.ICardReader;
-import oop.inheritance.application.readers.SwipperReaderIngenico;
 import oop.library.ingenico.services.IngenicoPrinter;
 
 import java.util.Arrays;
@@ -43,6 +41,7 @@ public class IngenicoTerminalFactory extends AbstractTerminalFactory {
         return Arrays.asList(SwipperReaderIngenico.getInstance(), ChipReaderIngenico.getInstance());
     }
 
+
     @Override
     public ITransaction createTransaction() {
         return new IngenicoTransaction();
@@ -65,5 +64,10 @@ public class IngenicoTerminalFactory extends AbstractTerminalFactory {
     @Override
     public IPrinter createPrinter() {
         return PrinterIngenico.getInstance();
+    }
+
+    @Override
+    public ICardProvider createCardProvider() {
+        return new CardProviderIngenico();
     }
 }
